@@ -3,9 +3,23 @@ package glance
 import (
 	"bytes"
 	"encoding/base64"
+	"io/fs"
+	"strings"
 	"testing"
 	"time"
 )
+
+func TestLoginButtonRemainsInTabOrder(t *testing.T) {
+	template, err := fs.ReadFile(templateFS, "login.html")
+	if err != nil {
+		t.Fatalf("Failed to read login template: %v", err)
+	}
+
+	button := `<button class="login-button animate-entrance" id="login-button" aria-disabled="true">`
+	if !strings.Contains(string(template), button) {
+		t.Fatal("Login button must use aria-disabled so it remains keyboard focusable")
+	}
+}
 
 func TestAuthTokenGenerationAndVerification(t *testing.T) {
 	secret, err := makeAuthSecretKey(AUTH_SECRET_KEY_LENGTH)

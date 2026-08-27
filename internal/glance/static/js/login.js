@@ -61,18 +61,26 @@ function enableLoginButtonIfCriteriaMet() {
            usernameValue === state.lastUsername
         && passwordValue === state.lastPassword;
 
-    loginButton.disabled = !(
+    setLoginButtonDisabled(!(
            usernameValid
         && passwordValid
         && !isUsingLastCredentials
         && !state.isLoading
         && !state.isRateLimited
-    );
+    ));
+}
+
+function setLoginButtonDisabled(disabled) {
+    loginButton.setAttribute("aria-disabled", disabled.toString());
+}
+
+function isLoginButtonDisabled() {
+    return loginButton.getAttribute("aria-disabled") === "true";
 }
 
 function handleLoginWithEnter(event) {
     if (event.key !== "Enter") return;
-    if (loginButton.disabled) return;
+    if (isLoginButtonDisabled()) return;
 
     document.activeElement.blur();
     handleLoginAttempt();
@@ -87,11 +95,13 @@ passwordInput
     .on("keydown", handleLoginWithEnter);
 
 async function handleLoginAttempt() {
+    if (isLoginButtonDisabled()) return;
+
     state.lastUsername = usernameInput.value;
     state.lastPassword = passwordInput.value;
     errorMessage.text("");
 
-    loginButton.disable();
+    setLoginButtonDisabled(true);
     state.isLoading = true;
 
     const response = await fetch(AUTH_ENDPOINT, {
@@ -138,4 +148,4 @@ async function handleLoginAttempt() {
     }
 }
 
-loginButton.disable().on("click", handleLoginAttempt);
+loginButton.on("click", handleLoginAttempt);

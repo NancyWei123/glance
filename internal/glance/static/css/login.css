@@ -67,7 +67,7 @@
     margin-top: 3rem;
 }
 
-.login-button:not(:disabled) {
+.login-button:not([aria-disabled="true"]) {
     box-shadow: 0 0 10px 1px var(--color-separator);
 }
 
@@ -81,7 +81,7 @@
     color: var(--color-primary);
 }
 
-.login-button:disabled {
+.login-button[aria-disabled="true"] {
     border-color: var(--color-separator);
     color: var(--color-text-subdue);
     cursor: not-allowed;
@@ -93,7 +93,8 @@
     transition: transform .2s;
 }
 
-.login-button:not(:disabled):hover svg, .login-button:not(:disabled):focus svg {
+.login-button:not([aria-disabled="true"]):hover svg,
+.login-button:not([aria-disabled="true"]):focus svg {
     transform: translateX(.5rem);
 }
 
